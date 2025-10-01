@@ -1,12 +1,9 @@
-class Config {
-  private readonly _websiteName: string =
-    process.env.WEBSITE_NAME ?? "Default Name";
-  private readonly _websiteDescription: string =
-    process.env.WEBSITE_DESCRIPTION ?? "Default Description";
+import ENV_CONFIG from "./env.config";
+import META_DATA_CONFIG from "./meta-data.config";
 
-  public property(key: string) {
-    return this[`_${key}` as keyof this];
-  }
+class Config {
+  public readonly env = ENV_CONFIG;
+  public readonly metaData = META_DATA_CONFIG;
 }
 
 const CONFIG = new Config();
