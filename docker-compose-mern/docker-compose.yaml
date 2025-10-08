@@ -4,17 +4,17 @@ services:
     build:
       context: "./react-docker"
       dockerfile: Dockerfile
-      ports: 
-        - "5173:5173"
-      cotainer_name: react-container
-      environment:
-        - WATCHPACK_POLLING=true
-      networks: 
-        - mern-stack-network
-      volumes:
-        - ./react-docker:/app
-      depend_on:
-        - backend
+    ports: 
+      - "5173:5173"
+    container_name: react-container
+    environment:
+      - WATCHPACK_POLLING=true
+    networks: 
+      - mern-stack-network
+    volumes:
+      - ./react-docker:/app
+    depends_on:
+      - backend
 
   backend:
     build: 
@@ -27,7 +27,7 @@ services:
       - mern-stack-network
     volumes:
       - ./express-docker:/app
-    depend_on:
+    depends_on:
       - mongo
   
   mongo:
@@ -48,4 +48,3 @@ networks:
   mern-stack-network:
 volumes:
   mongoData:
-      
