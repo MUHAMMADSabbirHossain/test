@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUM for fixed roles (pro: DB-enforced, type-safe in TS)
+enum UserRoleNameType {
+  OWNER
+  ADMIN
+  MODERATOR
+  USER
+  GUEST
+}
+
+enum UserRoleSlugType {
+  owner
+  admin
+  moderator
+  user
+  guest
+}
+
+model UserRole {
+  id   Int              @id @default(autoincrement())
+  name UserRoleNameType @unique
+  slug UserRoleSlugType @unique
+
+  createdAt DateTime  @default(now()) @map("created_at") // Use now() for UTC
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") // Soft delete (nullable)
+  users     User[]
+
+  @@map("user_roles")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  slug       String   @unique
+  role       UserRole @relation(fields: [userRoleId], references: [id])
+  userRoleId Int
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("users")
+}
