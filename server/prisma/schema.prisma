@@ -44,12 +44,26 @@ model UserRole {
   @@map("user_roles")
 }
 
+enum UserStatus {
+  review
+  invalid
+  active
+  inactive
+  deleted
+  suspended
+  banned
+}
+
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  slug       String   @unique
-  role       UserRole @relation(fields: [userRoleId], references: [id])
-  userRoleId Int
+  id             String     @id @default(uuid())
+  // name String 
+  email          String     @unique
+  // slug         String @unique // TODO!!: add it later. 
+  status         UserStatus @default(active)
+  hashedPassword String     @map("hashed_password") // Hashed password (never plain text).
+
+  userRole   UserRole @relation(fields: [userRoleId], references: [id])
+  userRoleId Int      @map("user_role_id")
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
