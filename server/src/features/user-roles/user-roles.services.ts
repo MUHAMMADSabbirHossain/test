@@ -1,5 +1,5 @@
 /* External imports */
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 import { prisma } from "../../lib/database/prisma-db.js";
 
 /* Internal imports */
@@ -45,6 +45,10 @@ export async function postCreateUserRolesService(
         },
       });
       console.log(responseNewUserRole);
+
+      if (!responseNewUserRole || !responseNewUserRole.id) {
+        return response.status(404).send({ message: "Role not found" });
+      }
 
       return response.status(201).send(responseNewUserRole);
     }
