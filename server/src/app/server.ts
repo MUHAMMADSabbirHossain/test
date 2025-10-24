@@ -9,9 +9,17 @@ import { v1Router } from "./api/v1/route.js";
 /* Express app instance */
 export const app = express();
 
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? "https://your-nextjs-domain.com"
+      : "http://localhost:3000", // Or your Next.js dev URL
+  credentials: true, // Allow credentials
+};
+
 /* Middlewares */
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 /* API's version router controller */
 app.use("/api/ping", pingRouter);
