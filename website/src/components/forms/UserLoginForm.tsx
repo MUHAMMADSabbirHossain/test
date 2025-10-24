@@ -36,23 +36,35 @@ function UserLoginForm() {
   async function onSubmit(formData: LoginUserSchemaTypes) {
     try {
       console.log(formData);
-      const test = axios.post("/api/v1/auth/login/owner", {
-        userRoleName: "OWNER",
-        ...formData,
-      });
+      const responseLogin = axios.post(
+        "/api/v1/auth/login/owner",
+        {
+          userRoleName: "OWNER",
+          ...formData,
+        },
+        {
+          withCredentials: true, // Ensure credentials (cookies) are sent
+        }
+      );
 
-      toast.promise(test, {
+      toast.promise(responseLogin, {
         loading: "Loading...",
         success: (data) => {
-          console.log(data);
+          console.log(`Success: ${data}`, data);
 
-          if (data.status !== 200 && !data.data.token && !data.data.user.id) {
+          if (
+            data.status !== 200 &&
+            !data.data?.token &&
+            !data.data?.user?.id
+          ) {
+            console.error(data);
             return "Error: " + data.data.message;
+          } else {
+            return `Logged in as ${data.data?.user?.email}.`;
           }
-          return `Logged in as ${data.data.user.email}.`;
         },
         error: (error) => {
-          console.log(error);
+          console.error(error);
           return `Error: ${error}`;
         },
         position: "top-center",
@@ -60,7 +72,7 @@ function UserLoginForm() {
         duration: 5000,
       });
     } catch (error) {
-      console.log(`Error: ${error}` || error);
+      console.error(`Error: ${error}` || error);
 
       toast.error(`Error: ${error}`, {
         description: `Error: ${error}`,

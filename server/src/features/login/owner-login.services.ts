@@ -76,17 +76,33 @@ export async function postLoginOwnerService(
       { expiresIn: "1h" }
     );
 
-    return response.status(200).send({
-      user: {
-        id: responseUser.id,
-        email: responseUser.email,
-        userRole: responseUser.userRole.name,
-      },
-      token,
-    });
+    return response
+      .status(200)
+      .cookie("auth_token", token, {
+        httpOnly: true, // Crucial: Prevents client-side JS access (XSS protection)
+        secure: process.env.NODE_ENV === "production", // Use 'true' in production with HTTPS
+        sameSite: "strict", // CSRF protection
+        maxAge: 60 * 60 * 1000, // 1 hour in milliseconds, matching JWT expiry
+        path: "/", // Cookie is accessible on all routes under the root
+        // domain: ".yourdomain.com" // Optional: specify domain if needed for subdomain sharing
+      })
+      .send({
+        user: {
+          // id: responseUser.id,
+          email: responseUser.email,
+          userRole: responseUser.userRole.name,
+        },
+      });
   } catch (error) {
     console.log(error);
 
-    return response.status(500).send({ message: "Internal server error" });
+    return response
+      .status(500)
+      .cookie("auth_token", "no-token", {
+        httpOnly: true, // Crucial: Prevents client-side JS access (XSS protection)
+        secure: process.env.NODE_ENV === "production", // Use 'true' in production with HTTPS
+        sameSite: "strict", // CSRF protection
+      })
+      .send({ message: "Internal server error" });
   }
 }
