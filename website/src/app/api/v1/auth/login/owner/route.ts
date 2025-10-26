@@ -46,17 +46,6 @@ export async function POST(request: NextRequest) {
       const backendData = axiosError.response?.data; // The error message/object from Express
       const backendHeaders = axiosError.response?.headers; // Optional: forward headers if needed
 
-      // This ensures the frontend receives the exact status (e.g., 401) and message from the Express server
-      cookieStore.set({
-        name: "",
-        value: "",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24,
-        path: "/",
-      });
-
       return NextResponse.json(backendData, { status: backendStatus });
     }
 
