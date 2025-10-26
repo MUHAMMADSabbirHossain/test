@@ -1,9 +1,12 @@
 import UserLoginForm from "@/components/forms/UserLoginForm";
+import { Suspense } from "react";
 
 function OwnerLoginPage() {
   return (
     <>
-      <UserLoginForm />
+      <Suspense fallback={<div>Loading login form...</div>}>
+        <UserLoginForm />
+      </Suspense>
     </>
   );
 }
