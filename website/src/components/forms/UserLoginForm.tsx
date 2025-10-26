@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   loginUserSchema,
@@ -32,6 +33,8 @@ function UserLoginForm() {
       password: "",
     },
   });
+  const route = useRouter();
+  const searchParams = useSearchParams();
 
   async function onSubmit(formData: LoginUserSchemaTypes) {
     try {
@@ -60,6 +63,7 @@ function UserLoginForm() {
             console.error(data);
             return "Error: " + data.data.message;
           } else {
+            route.push(searchParams.get("returnTo") || "/");
             return `Logged in as ${data.data?.user?.email}.`;
           }
         },
