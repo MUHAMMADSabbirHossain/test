@@ -1,9 +1,8 @@
-import DashbaordPage from "./page";
-
-function layout() {
+function layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <DashbaordPage />
+      <h1>Dashboard Layout</h1>
+      {children}
     </>
   );
 }
